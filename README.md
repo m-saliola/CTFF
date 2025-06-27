@@ -72,6 +72,11 @@ ctff example.txt mydict
 
 CTFF reduces file size by roughly **25%**, depending on dictionary coverage and capitalization. Capital text adds a lot of data, so minimizing capitals will result in better compression.
 
+## Notes
+
+- Currently, CTFF does not support MacOS.
+- If ctff doesn't run unless you prefix it with ./ or provide the full path, you may need to [add it to your system PATH](https://zwbetz.com/how-to-add-a-binary-to-your-path-on-macos-linux-windows/). This lets you run CTFF from anywhere.
+
 ## License
 
 CTFF is licensed under the GNU General Public License v3.0. See [LICENSE](LICENSE) for details.
