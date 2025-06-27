@@ -72,6 +72,69 @@ ctff example.txt mydict
 
 CTFF reduces file size by roughly **25%**, depending on dictionary coverage and capitalization. Capital text adds a lot of data, so minimizing capitals will result in better compression.
 
+## Add CTFF to Right-Click Menu
+
+You can integrate CTFF into your operating system's context menu to compress files more easily.
+
+### Windows
+
+1. Create a `.reg` file (e.g., `ctff-context.reg`) with the following content:
+
+    ```reg
+    Windows Registry Editor Version 5.00
+
+    [HKEY_CLASSES_ROOT\*\shell\CTFF Compress]
+    @="Compress with CTFF"
+    "Icon"="C:\\Path\\To\\ctff.exe"
+
+    [HKEY_CLASSES_ROOT\*\shell\CTFF Compress\command]
+    @="\"C:\\Path\\To\\ctff.exe\" \"%1\""
+    ```
+
+2. Replace `C:\\Path\\To\\ctff.exe` with the actual full path to your CTFF executable.
+3. Double-click the `.reg` file to add it to the registry.
+4. You’ll now see "Compress with CTFF" when right-clicking `.txt` files.
+
+Note: You can also create a version that works for folders if needed.
+
+---
+
+### Linux (Nautilus, Nemo, Thunar)
+
+#### For GNOME Files (Nautilus)
+
+1. Create a script file:
+
+    ```bash
+    ~/.local/share/nautilus/scripts/CTFF Compress
+    ```
+
+2. Paste the following into the file:
+
+    ```bash
+    #!/bin/bash
+    for file in "$@"; do
+        ctff "$file"
+    done
+    ```
+
+3. Make it executable:
+
+    ```bash
+    chmod +x ~/.local/share/nautilus/scripts/CTFF\ Compress
+    ```
+
+4. Right-click any `.txt` file → Scripts → CTFF Compress
+
+#### For Other File Managers
+
+Most Linux file managers support custom actions:
+
+- **Nemo**: `~/.local/share/nemo/actions/`
+- **Thunar**: Use *Edit → Configure custom actions*
+
+Make sure `ctff` is in your PATH, or use the full path to the binary in the script.
+
 ## Notes
 
 - Currently, CTFF does not support MacOS.
