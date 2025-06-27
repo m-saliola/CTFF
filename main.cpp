@@ -7,6 +7,29 @@
 #include <algorithm>
 #include <string>
 
+#ifdef _WIN32
+#include <windows.h>
+std::string getExecutablePath() {
+    char path[MAX_PATH];
+    GetModuleFileNameA(NULL, path, MAX_PATH);
+    std::string exePath(path);
+    return exePath.substr(0, exePath.find_last_of("\\/"));
+}
+#elif __linux__
+#include <unistd.h>
+#include <limits.h>
+std::string getExecutablePath() {
+    char result[PATH_MAX];
+    ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
+    std::string exePath = std::string(result, (count > 0) ? count : 0);
+    return exePath.substr(0, exePath.find_last_of("/"));
+}
+#else
+std::string getExecutablePath() {
+    return "";
+}
+#endif
+
 std::vector<std::string> split(const std::string& input, char delimiter) {
     std::vector<std::string> parts;
     std::string current;
@@ -485,7 +508,17 @@ int main(int argc, char** argv) {
     }
 
     std::string fileName = argv[1];
-    std::string dictName = (argc < 3) ? "dict/english" : "dict/" + std::string(argv[2]);
+
+    std::string exeDir = getExecutablePath();
+
+    std::string dictBase = exeDir + "/dict/";
+
+    std::string dictName;
+    if (argc < 3) {
+        dictName = dictBase + "english";
+    } else {
+        dictName = dictBase + argv[2];
+    }
 
     if (fileName.size() >= 5 && fileName.substr(fileName.size() - 5) == ".ctff") {
         decompress(fileName, dictName);
